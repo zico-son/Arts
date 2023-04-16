@@ -29,7 +29,7 @@ class Semester(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     def __str__(self):
-        return self.semester_name
+        return self.semester_name + ' ' + str(self.year)
 
 class Instructor(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='instructor_user')
