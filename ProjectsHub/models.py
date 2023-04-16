@@ -51,7 +51,7 @@ class Student(models.Model):
     student_id = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.student_name
+        return self.student_id
 
 class CourseRegistration(models.Model):
     course_registration_student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='course_registration_student')
