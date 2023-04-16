@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 class Level(models.Model):
     level_name = models.CharField(max_length=255)
@@ -31,6 +32,7 @@ class Semester(models.Model):
         return self.semester_name
 
 class Instructor(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='instructor_user')
     instructor_name = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
     def __str__(self):
@@ -46,6 +48,7 @@ class OpenCourse(models.Model):
         return self.open_course_course.course_name
 
 class Student(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='student_user')
     student_name = models.CharField(max_length=255)
 
     def __str__(self):
