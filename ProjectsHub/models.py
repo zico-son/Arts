@@ -58,7 +58,7 @@ class CourseRegistration(models.Model):
     course_registration_course = models.ForeignKey(OpenCourse, on_delete=models.CASCADE, related_name='course_registration_course')
 
     def __str__(self):
-        return self.course_registration_student.student_name
+        return self.course_registration_student.student_id
 
 
 class Project(models.Model):
