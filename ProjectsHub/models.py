@@ -43,8 +43,6 @@ class OpenCourse(models.Model):
     open_course_instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, related_name='open_course_instructor')
     open_course_capacity = models.IntegerField() # Optional
 
-    def __str__(self):
-        return self.open_course_course.course_name
 
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='student_user')
@@ -56,9 +54,6 @@ class Student(models.Model):
 class CourseRegistration(models.Model):
     course_registration_student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='course_registration_student')
     course_registration_course = models.ForeignKey(OpenCourse, on_delete=models.CASCADE, related_name='course_registration_course')
-
-    def __str__(self):
-        return self.course_registration_student.student_id
 
 
 class Project(models.Model):
