@@ -33,7 +33,6 @@ class Semester(models.Model):
 
 class Instructor(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='instructor_user')
-    instructor_name = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
     def __str__(self):
         return self.instructor_name
