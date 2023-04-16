@@ -49,7 +49,7 @@ class OpenCourse(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='student_user')
-    student_name = models.CharField(max_length=255)
+    student_id = models.CharField(max_length=255)
 
     def __str__(self):
         return self.student_name
