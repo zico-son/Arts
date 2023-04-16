@@ -35,7 +35,7 @@ class Instructor(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='instructor_user')
     title = models.CharField(max_length=255)
     def __str__(self):
-        return self.instructor_name
+        return self.title
 
 class OpenCourse(models.Model):
     open_course_semester = models.ForeignKey(Semester, on_delete=models.CASCADE, related_name='open_course_semester')
