@@ -1,7 +1,13 @@
 from rest_framework.viewsets import ModelViewSet
 from ProjectsHub.serializers import *
 from ProjectsHub.models import *
-
+from ProjectsHub.pagination import *
+from django_filters.rest_framework import DjangoFilterBackend
 class ProjectViewSet(ModelViewSet):
-    queryset = Project.objects.all()
+    pagination_class = DefaultPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = [ 'project_course_registration__course_registration_course__open_course_course__course_name', 'project_course_registration__course_registration_course__open_course_semester__semester_name', 'project_course_registration__course_registration_course__open_course_course__course_level__level_name','project_course_registration__course_registration_course__open_course_course__course_department__department_name']
+
+    
+    queryset = Project.objects.select_related('project_course_registration__course_registration_student__user').select_related('project_course_registration__course_registration_course__open_course_semester').select_related('project_course_registration__course_registration_course__open_course_instructor').select_related('project_course_registration__course_registration_course__open_course_course__course_level').select_related('project_course_registration__course_registration_course__open_course_course__course_department').all()
     serializer_class = ProjectSerializer
