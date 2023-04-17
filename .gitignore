@@ -1,5 +1,5 @@
 *.pyc
 __pycache__
 migrations
-Pipefile
-Pipefile.lock
+Pipfile
+Pipfile.lock
