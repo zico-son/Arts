@@ -62,5 +62,7 @@ class Project(models.Model):
     project_file = models.FileField(upload_to='projects/') # upload files in specific folder based on date
     project_course_registration = models.ForeignKey(CourseRegistration, on_delete=models.CASCADE, related_name='project_course_registration')
 
+    class Meta:
+        ordering = ['project_name']
     def __str__(self):
         return self.project_name
