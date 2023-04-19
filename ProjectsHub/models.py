@@ -17,8 +17,8 @@ class Course(models.Model):
     course_name = models.CharField(max_length=255)
     course_code = models.CharField(max_length=255)
     course_description = models.TextField()
-    course_level = models.ForeignKey(Level, on_delete=models.CASCADE, related_name='course_level')
-    course_department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='course_department')
+    level = models.ForeignKey(Level, on_delete=models.CASCADE, related_name='level')
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='department')
 
     def __str__(self):
         return self.course_name
@@ -38,10 +38,10 @@ class Instructor(models.Model):
         return self.title
 
 class OpenCourse(models.Model):
-    open_course_semester = models.ForeignKey(Semester, on_delete=models.CASCADE, related_name='open_course_semester')
-    open_course_course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='open_course_course')
-    open_course_instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, related_name='open_course_instructor')
-    open_course_capacity = models.IntegerField() # Optional
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE, related_name='semester')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course')
+    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, related_name='instructor')
+    capacity = models.IntegerField() # Optional
 
 
 class Student(models.Model):
@@ -52,15 +52,15 @@ class Student(models.Model):
         return self.student_id
 
 class CourseRegistration(models.Model):
-    course_registration_student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='course_registration_student')
-    course_registration_course = models.ForeignKey(OpenCourse, on_delete=models.CASCADE, related_name='course_registration_course')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student')
+    open_course = models.ForeignKey(OpenCourse, on_delete=models.CASCADE, related_name='open_course')
 
 
 class Project(models.Model):
     project_name = models.CharField(max_length=255)
     project_description = models.TextField()
     project_file = models.FileField(upload_to='projects/') # upload files in specific folder based on date
-    project_course_registration = models.ForeignKey(CourseRegistration, on_delete=models.CASCADE, related_name='project_course_registration')
+    registration = models.ForeignKey(CourseRegistration, on_delete=models.CASCADE, related_name='registration')
 
     class Meta:
         ordering = ['project_name']
