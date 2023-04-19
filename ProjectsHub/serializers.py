@@ -1,3 +1,4 @@
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, StringRelatedField
 from ProjectsHub.models import *
 from drf_writable_nested import WritableNestedModelSerializer as NestedSerializer
@@ -52,9 +53,37 @@ class CourseRegistrationSerializer(ModelSerializer):
         model = CourseRegistration
         fields = ['id', 'course_registration_student', 'course_registration_course']
 
-class ProjectSerializer(NestedSerializer):
-    project_course_registration = CourseRegistrationSerializer()
+class ProjectSerializer(serializers.ModelSerializer):
+    course = serializers.SerializerMethodField()
+    student = serializers.SerializerMethodField()
     class Meta:
         model = Project
-        fields = ['id', 'project_name', 'project_description', 'project_course_registration']
-        
+        fields = ['id', 'name', 'description', 'attachment', 'course', 'student']
+    
+    name = serializers.CharField(max_length=255, source='project_name')
+    description = serializers.CharField(source='project_description')
+    attachment = serializers.FileField(source='project_file')
+
+    def get_course(self, obj):
+        registration = obj.project_course_registration
+        return {
+            'id': registration.id,
+            'course_name': registration.course_registration_course.open_course_course.course_name,
+            'course_level': registration.course_registration_course.open_course_course.course_level.level_name,
+            'course_department': registration.course_registration_course.open_course_course.course_department.department_name,
+            'semester': registration.course_registration_course.open_course_semester.semester_name,
+            'year': registration.course_registration_course.open_course_semester.year,
+        }
+    def get_student(self, obj):
+        registration = obj.project_course_registration
+        return {
+            'id': registration.course_registration_student.id,
+            'student_id': registration.course_registration_student.student_id,
+            'first_name': registration.course_registration_student.user.first_name,
+            'second_name': registration.course_registration_student.user.last_name
+        }
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret['course'] = self.get_course(instance)
+        ret['student'] = self.get_student(instance)
+        return ret
