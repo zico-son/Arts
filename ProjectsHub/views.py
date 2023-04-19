@@ -6,8 +6,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 class ProjectViewSet(ModelViewSet):
     pagination_class = DefaultPagination
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = [ 'project_course_registration__course_registration_course__open_course_course__course_name', 'project_course_registration__course_registration_course__open_course_semester__semester_name', 'project_course_registration__course_registration_course__open_course_course__course_level__level_name','project_course_registration__course_registration_course__open_course_course__course_department__department_name']
+    filterset_fields = [ 'registration__open_course__course__course_name', 'registration__open_course__semester__semester_name', 'registration__open_course__course__level__level_name','registration__open_course__course__department__department_name']
 
     
-    queryset = Project.objects.select_related('project_course_registration__course_registration_student__user').select_related('project_course_registration__course_registration_course__open_course_semester').select_related('project_course_registration__course_registration_course__open_course_instructor').select_related('project_course_registration__course_registration_course__open_course_course__course_level').select_related('project_course_registration__course_registration_course__open_course_course__course_department').all()
+    queryset = Project.objects.select_related('registration__student__user').select_related('registration__open_course__semester').select_related('registration__open_course__instructor').select_related('registration__open_course__course__level').select_related('registration__open_course__course__department').all()
     serializer_class = ProjectSerializer
