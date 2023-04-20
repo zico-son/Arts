@@ -18,7 +18,7 @@ class CourseSerializer(ModelSerializer):
     course_level = StringRelatedField()
     class Meta:
         model = Course
-        fields = ['id', 'course_name','level', 'department']
+        fields = ['id', 'course_name','course_level', 'course_department']
 
 class SemesterSerializer(ModelSerializer):
     class Meta:

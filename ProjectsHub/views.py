@@ -11,3 +11,8 @@ class ProjectViewSet(ModelViewSet):
     
     queryset = Project.objects.select_related('registration__student__user').select_related('registration__open_course__semester').select_related('registration__open_course__instructor').select_related('registration__open_course__course__level').select_related('registration__open_course__course__department').all()
     serializer_class = ProjectSerializer
+
+
+class OpenCourseViewSet(ModelViewSet):
+    queryset = OpenCourse.objects.all()
+    serializer_class = OpenCourseSerializer

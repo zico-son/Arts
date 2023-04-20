@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+import string,random
 
 class Level(models.Model):
     level_name = models.CharField(max_length=255)
@@ -42,6 +43,17 @@ class OpenCourse(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course')
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, related_name='instructor')
     capacity = models.IntegerField() # Optional
+    open_course_code = models.CharField(max_length=8,unique=1,blank=1)
+
+    def save(self, *args, **kwargs):
+        if not self.open_course_code:
+            while True:
+                code =''.join(random.choices(string.ascii_lowercase+string.digits,k=8))
+                if not OpenCourse.objects.filter(open_course_code=code).exists():
+                    self.open_course_code = code
+                    break
+            super().save(*args,**kwargs)
+
 
 
 class Student(models.Model):
