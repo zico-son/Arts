@@ -1,5 +1,18 @@
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from djoser.serializers import UserSerializer as BaseUserSerializer
+from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
+from djoser.serializers import UserSerializer as BaseUserSerializer
+
+
+
+class UserCreateSerializer(BaseUserCreateSerializer):
+    class Meta(BaseUserCreateSerializer.Meta):
+        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name']
+
+class UserSerializer(BaseUserSerializer):
+    class Meta(BaseUserSerializer.Meta):
+        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name']
 
 
 class TokenObtainPairSerializer(TokenObtainSerializer):
@@ -12,3 +25,11 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
         data['refresh_token'] = str(refresh)
         data['access_token'] = str(refresh.access_token)
         return data
+
+class UserCreateSerializer(BaseUserCreateSerializer):
+    class Meta(BaseUserCreateSerializer.Meta):
+        fields = ['id','first_name', 'last_name', 'password','re_password', 'email','username']
+
+class UserSerializer(BaseUserSerializer):
+    class Meta(BaseUserSerializer.Meta):
+        fields = ['id', 'username','first_name', 'last_name','email',]
