@@ -10,6 +10,6 @@ def o6u_email_validator(value):
 
 
 class User(AbstractUser):
-    email = models.EmailField(validators=[o6u_email_validator], unique=True)
-    account_type = models.CharField(max_length=50, default='student')
+    # email = models.EmailField(validators=[o6u_email_validator], unique=True)
+    # account_type = models.CharField(max_length=50, default='student')
     pass
