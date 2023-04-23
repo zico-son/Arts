@@ -70,7 +70,8 @@ class Student(models.Model):
 class CourseRegistration(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student')
     open_course = models.ForeignKey(OpenCourse, on_delete=models.CASCADE, related_name='open_course')
-
+    class Meta:
+        ordering = ['student']
 
 class Project(models.Model):
     project_name = models.CharField(max_length=255)

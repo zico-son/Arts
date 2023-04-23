@@ -73,3 +73,10 @@ class StudentViewSet(ModelViewSet):
     pagination_class = DefaultPagination
     queryset = Student.objects.select_related('user').all()
     serializer_class = StudentSerializer
+
+class CourseRegistrationViewSet(ModelViewSet):
+    filter_backends = [SearchFilter]
+    search_fields = ['student__user__first_name', 'student__user__last_name']
+    pagination_class = DefaultPagination
+    queryset = CourseRegistration.objects.select_related('student__user').select_related('open_course__course').select_related('open_course__semester').all()
+    serializer_class = CourseRegistrationSerializer
