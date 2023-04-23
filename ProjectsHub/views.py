@@ -25,3 +25,11 @@ class CourseViewSet(ModelViewSet):
             return ViewCourseSerializer
         else:
             return CreateCourseSerializer
+        
+class OpenCourseViewSet(ModelViewSet):
+    queryset = OpenCourse.objects.select_related('course').select_related('semester').select_related('instructor').select_related('instructor__user').all()
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return ViewOpenCourseSerializer
+        else:
+            return CreateOpenCourseSerializer
