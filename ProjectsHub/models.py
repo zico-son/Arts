@@ -1,5 +1,10 @@
 from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
+
+def semester_year_validator(value):
+    if value < 2000 or value > 2100:
+        raise ValidationError('Year must be between four digits 20XX') 
 
 class Level(models.Model):
     level_name = models.CharField(max_length=255)
@@ -25,7 +30,7 @@ class Course(models.Model):
 
 class Semester(models.Model):
     semester_name = models.CharField(max_length=255)
-    year = models.IntegerField() #need to limit to 4 digits or be 22-23
+    year = models.IntegerField(validators=[semester_year_validator]) #need to limit to 4 digits or be 22-23
     start_date = models.DateField()
     end_date = models.DateField()
     def __str__(self):
