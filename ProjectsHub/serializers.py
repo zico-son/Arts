@@ -6,12 +6,12 @@ from ProjectsHub.models import *
 class DepartmentSerializer(ModelSerializer):
     class Meta:
         model = Department
-        fields = '__all__'
+        fields = ['id', 'department_name']
 
 class LevelSerializer(ModelSerializer):
     class Meta:
         model = Level
-        fields = '__all__'
+        fields = ['id', 'level_name']
 
 class ViewCourseSerializer(ModelSerializer):
     department = StringRelatedField()

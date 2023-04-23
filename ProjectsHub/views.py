@@ -18,6 +18,14 @@ class SemesterViewSet(ModelViewSet):
     queryset = Semester.objects.all()
     serializer_class = SemesterSerializer
 
+class DepartmentViewSet(ModelViewSet):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
+
+class LevelViewSet(ModelViewSet):
+    queryset = Level.objects.all()
+    serializer_class = LevelSerializer
+
 class InstructorViewSet(ModelViewSet):
     queryset = Instructor.objects.select_related('user').all()
     def get_serializer_class(self):
