@@ -1,10 +1,11 @@
 from rest_framework.viewsets import ModelViewSet
+from ProjectsHub.customviewsets import CustomModelViewSet
 from ProjectsHub.serializers import *
 from ProjectsHub.models import *
 from ProjectsHub.pagination import *
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
-class ProjectViewSet(ModelViewSet):
+class ProjectViewSet(CustomModelViewSet):
     pagination_class = DefaultPagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['registration__open_course__semester__semester_name']
@@ -67,14 +68,14 @@ class OpenCourseViewSet(ModelViewSet):
         else:
             return CreateOpenCourseSerializer
 
-class StudentViewSet(ModelViewSet):
+class StudentViewSet(CustomModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['student_id', 'user__first_name', 'user__last_name']
     pagination_class = DefaultPagination
     queryset = Student.objects.select_related('user').all()
     serializer_class = StudentSerializer
 
-class CourseRegistrationViewSet(ModelViewSet):
+class CourseRegistrationViewSet(CustomModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['student__user__first_name', 'student__user__last_name']
     pagination_class = DefaultPagination
