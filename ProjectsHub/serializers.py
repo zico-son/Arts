@@ -13,9 +13,14 @@ class LevelSerializer(ModelSerializer):
         model = Level
         fields = '__all__'
 
-class CourseSerializer(ModelSerializer):
-    course_department = StringRelatedField()
-    course_level = StringRelatedField()
+class ViewCourseSerializer(ModelSerializer):
+    department = StringRelatedField()
+    level = StringRelatedField()
+    class Meta:
+        model = Course
+        fields = ['id', 'course_name','level', 'department']
+
+class CreateCourseSerializer(ModelSerializer):
     class Meta:
         model = Course
         fields = ['id', 'course_name','level', 'department']
@@ -38,7 +43,6 @@ class InstructorSerializer(ModelSerializer):
 
 class OpenCourseSerializer(ModelSerializer):
     semester = StringRelatedField()
-    course = CourseSerializer()
     instructor = StringRelatedField()
     class Meta:
         model = OpenCourse
