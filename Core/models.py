@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import ValidationError 
+from django.core.exceptions import ValidationError
 
 def o6u_email_validator(value):
     if '@o6u.edu.eg' in value:
