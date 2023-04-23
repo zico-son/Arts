@@ -36,10 +36,22 @@ class StudentSerializer(ModelSerializer):
         model = Student
         fields = ['id', 'student_id', 'user']
 
-class InstructorSerializer(ModelSerializer):
+class ViewInstructorSerializer(ModelSerializer):
+    user = serializers.SerializerMethodField()
     class Meta:
         model = Instructor
-        fields = '__all__'
+        fields = ['id', 'title', 'user'] 
+    def get_user(self, obj):
+        user = obj.user
+        return {
+            'first_name': user.first_name,
+            'second_name': user.last_name,
+        }
+class CreateInstructorSerializer(ModelSerializer):
+    class Meta:
+        model = Instructor
+        fields = ['id', 'title', 'user'] 
+
 
 class ViewOpenCourseSerializer(ModelSerializer):
     semester = StringRelatedField()
