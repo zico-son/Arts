@@ -15,21 +15,29 @@ class ProjectViewSet(ModelViewSet):
     serializer_class = ProjectSerializer
 
 class SemesterViewSet(ModelViewSet):
+    filter_backends = [SearchFilter]
+    search_fields = ['semester_name', 'year']
     pagination_class = DefaultPagination
     queryset = Semester.objects.all()
     serializer_class = SemesterSerializer
 
 class DepartmentViewSet(ModelViewSet):
+    filter_backends = [SearchFilter]
+    search_fields = ['department_name']
     pagination_class = DefaultPagination
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
 
 class LevelViewSet(ModelViewSet):
+    filter_backends = [SearchFilter]
+    search_fields = ['level_name']
     pagination_class = DefaultPagination
     queryset = Level.objects.all()
     serializer_class = LevelSerializer
 
 class InstructorViewSet(ModelViewSet):
+    filter_backends = [SearchFilter]
+    search_fields = ['user__first_name', 'user__last_name']
     pagination_class = DefaultPagination
     queryset = Instructor.objects.select_related('user').all()
     def get_serializer_class(self):
@@ -38,6 +46,8 @@ class InstructorViewSet(ModelViewSet):
         else:
             return CreateInstructorSerializer
 class CourseViewSet(ModelViewSet):
+    filter_backends = [SearchFilter]
+    search_fields = ['course_name', 'level__level_name', 'department__department_name']
     pagination_class = DefaultPagination
     queryset = Course.objects.select_related('level').select_related('department').all()
     def get_serializer_class(self):
@@ -47,6 +57,8 @@ class CourseViewSet(ModelViewSet):
             return CreateCourseSerializer
         
 class OpenCourseViewSet(ModelViewSet):
+    filter_backends = [SearchFilter]
+    search_fields = ['course__course_name', 'semester__semester_name', 'instructor__user__first_name', 'instructor__user__last_name']
     pagination_class = DefaultPagination
     queryset = OpenCourse.objects.select_related('course').select_related('semester').select_related('instructor').select_related('instructor__user').all()
     def get_serializer_class(self):
