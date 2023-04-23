@@ -23,7 +23,7 @@ class CourseSerializer(ModelSerializer):
 class SemesterSerializer(ModelSerializer):
     class Meta:
         model = Semester
-        fields = '__all__'
+        fields = ['id', 'semester_name', 'year', 'start_date', 'end_date']
 
 class StudentSerializer(ModelSerializer):
     user = StringRelatedField()

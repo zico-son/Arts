@@ -30,9 +30,9 @@ class Course(models.Model):
 
 class Semester(models.Model):
     semester_name = models.CharField(max_length=255)
-    year = models.IntegerField(validators=[semester_year_validator]) #need to limit to 4 digits or be 22-23
-    start_date = models.DateField()
-    end_date = models.DateField()
+    year = models.IntegerField(validators=[semester_year_validator])
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
     def __str__(self):
         return self.semester_name + ' ' + str(self.year)
 

@@ -6,6 +6,7 @@ from ProjectsHub.views import *
 
 router = DefaultRouter()
 router.register('projects', ProjectViewSet, basename='projects')
+router.register('semesters', SemesterViewSet, basename='semesters')
 
 urlpatterns = [
     path('', include(router.urls)),
