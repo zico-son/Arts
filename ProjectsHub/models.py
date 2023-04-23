@@ -66,6 +66,8 @@ class Student(models.Model):
 
     def __str__(self):
         return self.student_id
+    class Meta:
+        ordering = ['student_id']
 
 class CourseRegistration(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student')
