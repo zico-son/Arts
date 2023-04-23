@@ -66,3 +66,10 @@ class OpenCourseViewSet(ModelViewSet):
             return ViewOpenCourseSerializer
         else:
             return CreateOpenCourseSerializer
+
+class StudentViewSet(ModelViewSet):
+    filter_backends = [SearchFilter]
+    search_fields = ['student_id', 'user__first_name', 'user__last_name']
+    pagination_class = DefaultPagination
+    queryset = Student.objects.select_related('user').all()
+    serializer_class = StudentSerializer
