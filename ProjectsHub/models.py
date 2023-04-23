@@ -11,12 +11,16 @@ class Level(models.Model):
 
     def __str__(self):
         return self.level_name
+    class Meta:
+        ordering = ['level_name']
 
 class Department(models.Model):
     department_name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.department_name
+    class Meta:
+        ordering = ['department_name']
 
 class Course(models.Model):
     course_name = models.CharField(max_length=255)
@@ -27,6 +31,8 @@ class Course(models.Model):
 
     def __str__(self):
         return self.course_name
+    class Meta:
+        ordering = ['course_name']
 
 class Semester(models.Model):
     semester_name = models.CharField(max_length=255)
@@ -35,20 +41,25 @@ class Semester(models.Model):
     end_date = models.DateField(null=True, blank=True)
     def __str__(self):
         return self.semester_name + ' ' + str(self.year)
+    class Meta:
+        ordering = ['-year']
 
 class Instructor(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='instructor_user')
     title = models.CharField(max_length=255)
     def __str__(self):
         return self.title
+    class Meta:
+        ordering = ['title']
 
 class OpenCourse(models.Model):
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE, related_name='semester')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course')
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, related_name='instructor')
     capacity = models.IntegerField() # Optional
-
-
+    
+    class Meta:
+        ordering = ['course']
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='student_user')
     student_id = models.CharField(max_length=255)

@@ -15,18 +15,22 @@ class ProjectViewSet(ModelViewSet):
     serializer_class = ProjectSerializer
 
 class SemesterViewSet(ModelViewSet):
+    pagination_class = DefaultPagination
     queryset = Semester.objects.all()
     serializer_class = SemesterSerializer
 
 class DepartmentViewSet(ModelViewSet):
+    pagination_class = DefaultPagination
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
 
 class LevelViewSet(ModelViewSet):
+    pagination_class = DefaultPagination
     queryset = Level.objects.all()
     serializer_class = LevelSerializer
 
 class InstructorViewSet(ModelViewSet):
+    pagination_class = DefaultPagination
     queryset = Instructor.objects.select_related('user').all()
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -34,6 +38,7 @@ class InstructorViewSet(ModelViewSet):
         else:
             return CreateInstructorSerializer
 class CourseViewSet(ModelViewSet):
+    pagination_class = DefaultPagination
     queryset = Course.objects.select_related('level').select_related('department').all()
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -42,6 +47,7 @@ class CourseViewSet(ModelViewSet):
             return CreateCourseSerializer
         
 class OpenCourseViewSet(ModelViewSet):
+    pagination_class = DefaultPagination
     queryset = OpenCourse.objects.select_related('course').select_related('semester').select_related('instructor').select_related('instructor__user').all()
     def get_serializer_class(self):
         if self.request.method == 'GET':
