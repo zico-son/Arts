@@ -16,7 +16,12 @@ class ProjectViewSet(CustomModelViewSet):
     filterset_fields = [ 'registration__open_course__course__course_name', 'registration__open_course__semester__semester_name', 'registration__open_course__course__level__level_name','registration__open_course__course__department__department_name']
 
     
-    queryset = Project.objects.select_related('registration__student__user').select_related('registration__open_course__semester').select_related('registration__open_course__instructor').select_related('registration__open_course__course__level').select_related('registration__open_course__course__department').all()
+    queryset = Project.objects \
+    .select_related('registration__student__user') \
+    .select_related('registration__open_course__semester') \
+    .select_related('registration__open_course__instructor') \
+    .select_related('registration__open_course__course__level') \
+    .select_related('registration__open_course__course__department').all()
     serializer_class = ProjectSerializer
 
 class SemesterViewSet(ModelViewSet):
