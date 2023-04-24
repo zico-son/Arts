@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 def semester_year_validator(value):
     if value < 2000 or value > 2100:
         raise ValidationError('Year must be between four digits 20XX') 
+import string,random
 
 class Level(models.Model):
     level_name = models.CharField(max_length=255)
@@ -60,6 +61,19 @@ class OpenCourse(models.Model):
     
     class Meta:
         ordering = ['course']
+    open_course_code = models.CharField(max_length=8,unique=1,blank=1)
+
+    def save(self, *args, **kwargs):
+        if not self.open_course_code:
+            while True:
+                code =''.join(random.choices(string.ascii_lowercase+string.digits,k=8))
+                if not OpenCourse.objects.filter(open_course_code=code).exists():
+                    self.open_course_code = code
+                    break
+            super().save(*args,**kwargs)
+
+
+
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='student_user')
     student_id = models.CharField(max_length=255)
@@ -74,6 +88,9 @@ class CourseRegistration(models.Model):
     open_course = models.ForeignKey(OpenCourse, on_delete=models.CASCADE, related_name='open_course')
     class Meta:
         ordering = ['student']
+
+
+
 
 class Project(models.Model):
     project_name = models.CharField(max_length=255)
