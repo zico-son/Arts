@@ -4,4 +4,3 @@ from Core.models import User
 
 class UserAdmin(BaseUserAdmin):
     pass
-admin.site.register(User)
