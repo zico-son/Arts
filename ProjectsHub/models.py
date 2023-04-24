@@ -1,11 +1,8 @@
 from django.db import models
+from ProjectsHub.validators import semester_year_validator
 from django.conf import settings
-from django.core.exceptions import ValidationError
-
-def semester_year_validator(value):
-    if value < 2000 or value > 2100:
-        raise ValidationError('Year must be between four digits 20XX') 
 import string,random
+
 
 class Level(models.Model):
     level_name = models.CharField(max_length=255)
@@ -58,10 +55,10 @@ class OpenCourse(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course')
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, related_name='instructor')
     capacity = models.IntegerField() # Optional
+    join_code = models.CharField(max_length=8,unique=1,blank=1)
     
     class Meta:
         ordering = ['course']
-    open_course_code = models.CharField(max_length=8,unique=1,blank=1)
 
     def save(self, *args, **kwargs):
         if not self.open_course_code:
