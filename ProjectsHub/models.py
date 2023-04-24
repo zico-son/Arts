@@ -68,6 +68,9 @@ class CourseRegistration(models.Model):
     open_course = models.ForeignKey(OpenCourse, on_delete=models.CASCADE, related_name='open_course')
 
 
+
+
+
 class Project(models.Model):
     project_name = models.CharField(max_length=255)
     project_description = models.TextField()

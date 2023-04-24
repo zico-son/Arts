@@ -1,6 +1,20 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, StringRelatedField
 from ProjectsHub.models import *
+from rest_framework.mixins import CreateModelMixin
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+
+
+
+class CourseEnrolmentSerializer(ModelSerializer):
+    # student = serializers.IntegerField()
+    open_course = serializers.CharField(max_length=8)
+    class Meta:
+        model = CourseRegistration
+        fields = ['student','open_course']
+
 
 
 class DepartmentSerializer(ModelSerializer):
