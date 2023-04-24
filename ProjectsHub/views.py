@@ -36,7 +36,7 @@ class LevelViewSet(ModelViewSet):
     queryset = Level.objects.all()
     serializer_class = LevelSerializer
 
-class InstructorViewSet(ModelViewSet):
+class InstructorViewSet(CustomModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['user__first_name', 'user__last_name']
     pagination_class = DefaultPagination
