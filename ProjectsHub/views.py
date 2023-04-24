@@ -5,12 +5,11 @@ from ProjectsHub.models import *
 from ProjectsHub.pagination import *
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
-class ProjectViewSet(CustomModelViewSet):
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import status
 
-class ProjectViewSet(ModelViewSet):
+class ProjectViewSet(CustomModelViewSet):
     pagination_class = DefaultPagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['registration__open_course__semester__semester_name']
@@ -87,13 +86,9 @@ class CourseRegistrationViewSet(CustomModelViewSet):
     queryset = CourseRegistration.objects.select_related('student__user').select_related('open_course__course').select_related('open_course__semester').all()
     serializer_class = CourseRegistrationSerializer
 
-class OpenCourseViewSet(ModelViewSet):
-    queryset = OpenCourse.objects.select_related('semester').select_related('course').select_related('instructor').all()
-    serializer_class = OpenCourseSerializer
-
-class CourseEnrollmentViewSet(ModelViewSet):
+class JoinCourseViewSet(ModelViewSet):
     queryset = CourseRegistration.objects.select_related('open_course').select_related('student').all()
-    serializer_class = CourseEnrolmentSerializer
+    serializer_class = JoinCourseSerializer
     
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
@@ -101,12 +96,7 @@ class CourseEnrollmentViewSet(ModelViewSet):
         course_code_data = serializer.validated_data.get('open_course')
         open_course = get_object_or_404(OpenCourse,open_course_code=course_code_data)
         student = serializer.validated_data.get('student')
-        registeration = CourseRegistration.objects.create(open_course=open_course,student=student)
+        registration = CourseRegistration.objects.create(open_course=open_course,student=student)
         if(CourseRegistration.objects.filter(open_course=open_course,student=student).exists()):
-           return Response({"detail": "Student is already registered to this course."},status=status.HTTP_400_BAD_REQUEST)
-        return registeration
-
-
-   
-
-   
+            return Response({"detail": "Student is already registered to this course."},status=status.HTTP_400_BAD_REQUEST)
+        return registration

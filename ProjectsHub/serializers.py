@@ -8,8 +8,7 @@ from django.shortcuts import get_object_or_404
 
 
 
-class CourseEnrolmentSerializer(ModelSerializer):
-    # student = serializers.IntegerField()
+class JoinCourseSerializer(ModelSerializer):
     open_course = serializers.CharField(max_length=8)
     class Meta:
         model = CourseRegistration
@@ -37,7 +36,7 @@ class ViewCourseSerializer(ModelSerializer):
 class CreateCourseSerializer(ModelSerializer):
     class Meta:
         model = Course
-        fields = ['id', 'course_name','course_level', 'course_department']
+        fields = ['id', 'course_name','level', 'department']
 
 class SemesterSerializer(ModelSerializer):
     class Meta:
@@ -79,7 +78,7 @@ class ViewOpenCourseSerializer(ModelSerializer):
     instructor = serializers.SerializerMethodField() 
     class Meta:
         model = OpenCourse
-        fields = ['id','capacity','course','semester', 'instructor']
+        fields = ['id','capacity','course', 'join_code','semester', 'instructor']
     def get_instructor(self, obj):
         instructor = obj.instructor
         return {
