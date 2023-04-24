@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django-cors-headers',
+    "corsheaders",
     'djoser',
     'django_filters',
     "debug_toolbar",
