@@ -172,3 +172,17 @@ class InstructorCourseViewSet(CustomModelViewSet):
     serializer_class = InstructorCourseSerializer
     def get_queryset(self):
         return OpenCourse.objects.filter(instructor__user=self.request.user).select_related('course').select_related('semester').all()
+    
+class InstructorProjectsViewSet(CustomModelViewSet):
+    filter_backends =[DjangoFilterBackend,SearchFilter]
+    search_fields = ['registration__open_course__semester__semester_name']
+    filterset_fields = [ 'registration__open_course__course__course_name', 'registration__open_course__semester__semester_name', 'registration__open_course__course__level__level_name','registration__open_course__course__department__department_name']
+    serializer_class = ProjectSerializer
+    def get_queryset(self):
+        return Project.objects.filter(registration__open_course__instructor__user=self.request.user) \
+                              .select_related('registration__student__user') \
+                              .select_related('registration__open_course__semester') \
+                              .select_related('registration__open_course__instructor') \
+                              .select_related('registration__open_course__course__level') \
+                              .select_related('registration__open_course__course__department')\
+                              .all()
