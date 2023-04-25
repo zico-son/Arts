@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 
 
 class JoinCourseSerializer(ModelSerializer):
+    student = serializers.SerializerMethodField(read_only=True)
     open_course = serializers.CharField(max_length=8)
     class Meta:
         model = CourseRegistration
