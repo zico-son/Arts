@@ -164,3 +164,11 @@ class JoinCourseViewSet(ModelViewSet):
             return Response({"detail": "Student is already registered to this course."},status=status.HTTP_400_BAD_REQUEST)
         registration = CourseRegistration.objects.create(open_course=open_course,student=student)
         return Response({'student':student_name,'course':open_course.course.course_name})
+
+class InstructorCourseViewSet(CustomModelViewSet):
+    filter_backends = [SearchFilter]
+    search_fields = ['course__course_name']
+    pagination_class = DefaultPagination
+    serializer_class = InstructorCourseSerializer
+    def get_queryset(self):
+        return OpenCourse.objects.filter(instructor__user=self.request.user).select_related('course').select_related('semester').all()

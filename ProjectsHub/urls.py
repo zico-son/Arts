@@ -18,6 +18,7 @@ router.register('open-courses', OpenCourseViewSet, basename='open-courses')
 router.register('students', StudentViewSet, basename='students')
 router.register('registrations', CourseRegistrationViewSet, basename='registrations')
 router.register('join-course',JoinCourseViewSet,basename='join-course')
+router.register('instructor-courses',InstructorCourseViewSet,basename='instructor-courses')
 urlpatterns = [
     path('', include(router.urls)),
     

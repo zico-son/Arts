@@ -6,6 +6,19 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
+class InstructorCourseSerializer(ModelSerializer):
+    course = serializers.SerializerMethodField()
+    class Meta:
+        model = OpenCourse
+        fields = ['join_code','course',]
+    def get_course(self, obj):
+        course = obj.course
+        return {
+            'id' : course.id,
+            'course_name' : course.course_name,
+            'level' : course.level.level_name,
+            'department': course.department.department_name,
+        }
 
 
 class JoinCourseSerializer(ModelSerializer):
