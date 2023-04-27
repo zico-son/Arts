@@ -12,7 +12,7 @@ class JoinCourseSerializer(ModelSerializer):
     open_course = serializers.CharField(max_length=8)
     class Meta:
         model = CourseRegistration
-        fields = ['student','open_course']
+        fields = ['student','open_course','join_code']
 
 
 
@@ -25,7 +25,17 @@ class LevelSerializer(ModelSerializer):
     class Meta:
         model = Level
         fields = ['id', 'level_name']
-
+class StudentSerializer(ModelSerializer):
+    user = serializers.SerializerMethodField() 
+    class Meta:
+        model = Student
+        fields = ['id', 'student_id', 'user']
+    def get_user(self, obj):
+        user = obj.user
+        return {
+            'first_name': user.first_name,
+            'second_name': user.last_name,
+        }
 class ViewCourseSerializer(ModelSerializer):
     department = StringRelatedField()
     level = StringRelatedField()
@@ -43,17 +53,7 @@ class SemesterSerializer(ModelSerializer):
         model = Semester
         fields = ['id', 'semester_name', 'year', 'start_date', 'end_date']
 
-class StudentSerializer(ModelSerializer):
-    user = serializers.SerializerMethodField() 
-    class Meta:
-        model = Student
-        fields = ['id', 'student_id', 'user']
-    def get_user(self, obj):
-        user = obj.user
-        return {
-            'first_name': user.first_name,
-            'second_name': user.last_name,
-        }
+
 
 class ViewInstructorSerializer(ModelSerializer):
     user = serializers.SerializerMethodField()

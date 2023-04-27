@@ -61,11 +61,11 @@ class OpenCourse(models.Model):
         ordering = ['course']
 
     def save(self, *args, **kwargs):
-        if not self.open_course_code:
+        if not self.join_code:
             while True:
                 code =''.join(random.choices(string.ascii_lowercase+string.digits,k=8))
-                if not OpenCourse.objects.filter(open_course_code=code).exists():
-                    self.open_course_code = code
+                if not OpenCourse.objects.filter(join_code=code).exists():
+                    self.join_code = code
                     break
             super().save(*args,**kwargs)
 
@@ -83,10 +83,9 @@ class Student(models.Model):
 class CourseRegistration(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student')
     open_course = models.ForeignKey(OpenCourse, on_delete=models.CASCADE, related_name='open_course')
+    join_code = models.CharField(max_length=8,unique=1,blank=1)
     class Meta:
         ordering = ['student']
-
-
 
 
 class Project(models.Model):
