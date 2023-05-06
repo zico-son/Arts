@@ -15,17 +15,13 @@ class ProjectViewSet(CustomModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['registration__open_course__semester__semester_name']
     filterset_fields = [ 'registration__open_course__course__course_name', 'registration__open_course__semester__semester_name', 'registration__open_course__course__level__level_name','registration__open_course__course__department__department_name']
-    def get_queryset(self):
-        user = self.request.user
-        student=Student.objects.get(user=user)
-        queryset =Project.objects \
+    queryset =Project.objects \
         .select_related('registration__student__user') \
         .select_related('registration__open_course__semester') \
         .select_related('registration__open_course__instructor') \
         .select_related('registration__open_course__course__level') \
-        .select_related('registration__open_course__course__department')\
+        .select_related('registration__open_course__course__department') \
         .all()
-        return queryset
     serializer_class = ProjectSerializer
 
 class StudentProjectViewSet(CustomModelViewSet):
