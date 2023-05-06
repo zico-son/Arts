@@ -28,7 +28,7 @@ class ProjectViewSet(CustomModelViewSet):
         return queryset
     serializer_class = ProjectSerializer
 
-class StudentprojectViewSet(CustomModelViewSet):
+class StudentProjectViewSet(CustomModelViewSet):
     pagination_class = DefaultPagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['registration__open_course__semester__semester_name']
@@ -43,7 +43,7 @@ class StudentprojectViewSet(CustomModelViewSet):
         .select_related('registration__open_course__course__level') \
         .select_related('registration__open_course__course__department')\
         .filter(
-          Q(registration__student=student)
+        Q(registration__student=student)
         ).all()
         if queryset.exists():
             return queryset
@@ -89,15 +89,14 @@ class CourseViewSet(ModelViewSet):
     search_fields = ['course_name', 'level__level_name', 'department__department_name']
     pagination_class = DefaultPagination
     queryset =Course.objects.all()
- 
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return ViewCourseSerializer
         else:
             return CreateCourseSerializer
-       
-class StudentcourseViewSet(ModelViewSet):
+
+class StudentCourseViewSet(ModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['course_name', 'level__level_name', 'department__department_name']
     pagination_class = DefaultPagination
@@ -112,16 +111,12 @@ class StudentcourseViewSet(ModelViewSet):
             return queryset
         else:
             return  Course.objects.none()
-        
- 
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return ViewCourseSerializer
         else:
             return CreateCourseSerializer
-      
-    
 class OpenCourseViewSet(ModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['course__course_name', 'semester__semester_name', 'instructor__user__first_name', 'instructor__user__last_name']
@@ -180,9 +175,9 @@ class InstructorProjectsViewSet(CustomModelViewSet):
     serializer_class = ProjectSerializer
     def get_queryset(self):
         return Project.objects.filter(registration__open_course__instructor__user=self.request.user) \
-                              .select_related('registration__student__user') \
-                              .select_related('registration__open_course__semester') \
-                              .select_related('registration__open_course__instructor') \
-                              .select_related('registration__open_course__course__level') \
-                              .select_related('registration__open_course__course__department')\
-                              .all()
+                            .select_related('registration__student__user') \
+                            .select_related('registration__open_course__semester') \
+                            .select_related('registration__open_course__instructor') \
+                            .select_related('registration__open_course__course__level') \
+                            .select_related('registration__open_course__course__department')\
+                            .all()
