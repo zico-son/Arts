@@ -83,7 +83,6 @@ class Student(models.Model):
 class CourseRegistration(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student')
     open_course = models.ForeignKey(OpenCourse, on_delete=models.CASCADE, related_name='open_course')
-    join_code = models.CharField(max_length=8,unique=1,blank=1)
     class Meta:
         ordering = ['student']
 

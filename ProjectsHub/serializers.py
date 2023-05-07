@@ -26,8 +26,13 @@ class JoinCourseSerializer(ModelSerializer):
     open_course = serializers.CharField(max_length=8)
     class Meta:
         model = CourseRegistration
-        fields = ['student','open_course','join_code']
-
+        fields = ['student','open_course']
+    def get_student(self, obj):
+        student = obj.student
+        return {
+            'first_name': student.user.first_name,
+            'second_name': student.user.last_name,
+        }
 
 
 class DepartmentSerializer(ModelSerializer):
