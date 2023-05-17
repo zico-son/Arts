@@ -162,7 +162,7 @@ class InstructorCourseViewSet(CustomModelViewSet):
     pagination_class = DefaultPagination
     serializer_class = InstructorCourseSerializer
     def get_queryset(self):
-        return OpenCourse.objects.filter(instructor__user=self.request.user).select_related('course').select_related('semester').all()
+        return OpenCourse.objects.filter(instructor__user=self.request.user).select_related('course__level','course__department').select_related('semester').all()
     
 class InstructorProjectsViewSet(CustomModelViewSet):
     filter_backends =[DjangoFilterBackend,SearchFilter]
