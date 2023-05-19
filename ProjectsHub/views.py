@@ -92,27 +92,6 @@ class CourseViewSet(ModelViewSet):
         else:
             return CreateCourseSerializer
 
-class StudentCourseViewSet(ModelViewSet):
-    filter_backends = [SearchFilter]
-    search_fields = ['course_name', 'level__level_name', 'department__department_name']
-    pagination_class = DefaultPagination
-    
-    def get_queryset(self):
-        user = self.request.user
-        student=Student.objects.get(user=user)
-        queryset =Course.objects.filter(
-        Q(course__open_course__student=student)
-        ).all()
-        if queryset.exists():
-            return queryset
-        else:
-            return  Course.objects.none()
-
-    def get_serializer_class(self):
-        if self.request.method == 'GET':
-            return ViewCourseSerializer
-        else:
-            return CreateCourseSerializer
 class OpenCourseViewSet(ModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['course__course_name', 'semester__semester_name', 'instructor__user__first_name', 'instructor__user__last_name']
@@ -177,3 +156,15 @@ class InstructorProjectsViewSet(CustomModelViewSet):
                             .select_related('registration__open_course__course__level') \
                             .select_related('registration__open_course__course__department')\
                             .all()
+class StudentCourseViewSet(ModelViewSet):
+    filter_backends = [SearchFilter]
+    search_fields = [ 'open_course__level__level_name','open_course__semester__semester_name', 'open_course__department__department_name']
+    filterset_fields = ['open_course__course__level','open_course__course__department','open_course__semester']
+    pagination_class = DefaultPagination
+    serializer_class = StudentCourseSerializer
+    def get_queryset(self):
+        queryset = CourseRegistration.objects.select_related('open_course__semester').select_related('open_course__instructor__user').select_related('open_course__course__level').select_related('open_course__course__department').filter(student__user_id=self.request.user).all()
+        if queryset.exists():
+            return queryset
+        else:
+            return  CourseRegistration.objects.none()
