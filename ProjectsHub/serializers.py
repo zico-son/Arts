@@ -10,7 +10,7 @@ class InstructorCourseSerializer(ModelSerializer):
     course = serializers.SerializerMethodField()
     class Meta:
         model = OpenCourse
-        fields = ['join_code','course',]
+        fields = ['join_code','course']
     def get_course(self, obj):
         course = obj.course
         return {
@@ -170,3 +170,24 @@ class ProjectSerializer(serializers.ModelSerializer):
         ret['course'] = self.get_course(instance)
         ret['student'] = self.get_student(instance)
         return ret
+
+class StudentCourseSerializer(serializers.ModelSerializer):
+    course_info = serializers.SerializerMethodField()
+    class Meta:
+        model = CourseRegistration
+        fields = ['course_info']
+    
+    
+
+    def get_course_info(self, obj:CourseRegistration):
+        #course = obj.course
+        return {
+            'id' : obj.open_course.course.id,
+            'course' : obj.open_course.course.course_name,
+            'level' : obj.open_course.course.level.level_name,
+            'department': obj.open_course.course.department.department_name,
+            'semester' : obj.open_course.semester.semester_name,
+            'year' : obj.open_course.semester.year,
+            'instructor' : obj.open_course.instructor.user.first_name + ' ' + obj.open_course.instructor.user.last_name,
+        }
+    
