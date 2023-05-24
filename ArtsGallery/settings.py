@@ -160,7 +160,8 @@ SIMPLE_JWT = {
 DJOSER = {
     'SERIALIZERS':{
     'user_create': 'Core.serializers.UserCreateSerializer',
-    'current_user': 'Core.serializers.UserSerializer'
+    'current_user': 'Core.serializers.UserSerializer',
+    'user': 'Core.serializers.UserCreateSerializer',
     }   
 }
 
