@@ -10,3 +10,4 @@ dockerfile
 .dockerignore
 media/
 .vscode/
+db.sqlite3
