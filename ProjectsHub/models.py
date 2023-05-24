@@ -92,6 +92,7 @@ class Project(models.Model):
     project_description = models.TextField()
     project_file = models.FileField(upload_to='projects/') # upload files in specific folder based on date
     registration = models.ForeignKey(CourseRegistration, on_delete=models.CASCADE, related_name='registration')
+    active = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['project_name']
