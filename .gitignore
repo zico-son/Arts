@@ -8,4 +8,5 @@ projects/
 fly.toml
 dockerfile
 .dockerignore
-media
+media/
+.vscode/
