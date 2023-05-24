@@ -18,8 +18,9 @@ router.register('registrations', CourseRegistrationViewSet, basename='registrati
 router.register('join-course',JoinCourseViewSet,basename='join-course')
 router.register('instructor-courses',InstructorCourseViewSet,basename='instructor-courses')
 router.register('instructor-projects',InstructorProjectsViewSet,basename='instructor-projects')
-router.register('student-courses', StudentCourseViewSet, basename='student-courses')
-router.register('student-projects', StudentProjectViewSet, basename='student-projects')
+# router.register('student-courses', StudentCourseViewSet, basename='student-courses')
+# router.register('student-projects', StudentProjectViewSet, basename='student-projects')
+router.register('student-courses', StudentCoursesViewSet, basename='student-courses')
 urlpatterns = [
     path('', include(router.urls)),
     

@@ -1,5 +1,5 @@
-from rest_framework.viewsets import ModelViewSet
-from ProjectsHub.customviewsets import CustomModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from ProjectsHub.customviewsets import CustomModelViewSet, NoDeleteModelViewSet
 from ProjectsHub.serializers import *
 from ProjectsHub.models import *
 from ProjectsHub.pagination import *
@@ -9,6 +9,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
+from rest_framework.settings import api_settings
 
 class ProjectViewSet(CustomModelViewSet):
     pagination_class = DefaultPagination
@@ -49,21 +51,21 @@ class StudentProjectViewSet(CustomModelViewSet):
 
 
 
-class SemesterViewSet(ModelViewSet):
+class SemesterViewSet(NoDeleteModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['semester_name', 'year']
     pagination_class = DefaultPagination
     queryset = Semester.objects.all()
     serializer_class = SemesterSerializer
 
-class DepartmentViewSet(ModelViewSet):
+class DepartmentViewSet(NoDeleteModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['department_name']
     pagination_class = DefaultPagination
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
 
-class LevelViewSet(ModelViewSet):
+class LevelViewSet(NoDeleteModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['level_name']
     pagination_class = DefaultPagination
@@ -80,12 +82,11 @@ class InstructorViewSet(CustomModelViewSet):
             return ViewInstructorSerializer
         else:
             return CreateInstructorSerializer
-class CourseViewSet(ModelViewSet):
+class CourseViewSet(NoDeleteModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['course_name', 'level__level_name', 'department__department_name']
     pagination_class = DefaultPagination
-    queryset =Course.objects.all()
-
+    queryset =Course.objects.select_related('level', 'department').all()
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return ViewCourseSerializer
@@ -135,11 +136,11 @@ class CourseRegistrationViewSet(CustomModelViewSet):
     filter_backends = [SearchFilter]
     search_fields = ['student__user__first_name', 'student__user__last_name']
     pagination_class = DefaultPagination
-    queryset = CourseRegistration.objects.select_related('student__user').select_related('open_course__course').select_related('open_course__semester').all()
+    queryset = CourseRegistration.objects.select_related().all()
     serializer_class = CourseRegistrationSerializer
 
 class JoinCourseViewSet(ModelViewSet):
-    queryset = CourseRegistration.objects.select_related('open_course').select_related('student').all()
+    queryset = CourseRegistration.objects.none()
     serializer_class = JoinCourseSerializer
     
     def create(self, request):
@@ -177,3 +178,31 @@ class InstructorProjectsViewSet(CustomModelViewSet):
                             .select_related('registration__open_course__course__level') \
                             .select_related('registration__open_course__course__department')\
                             .all()
+
+class StudentCoursesViewSet(ModelViewSet):
+    serializer_class = StudentCoursesSerializer
+    def get_queryset(self):
+        return CourseRegistration.objects.filter(student__user=self.request.user).select_related('open_course__semester', 'open_course__course__level', 'open_course__course__department', 'open_course__instructor__user').all()
+    http_method_names = ['get', 'head', 'options']
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    def retrieve(self, request, *args, **kwargs):
+        course_id = kwargs.get('pk')
+        projects = Project.objects.filter(Q(registration__open_course__course__id = course_id) & Q( registration__student__user__id = self.request.user.id)).all()
+
+        projects = StudentProjectsSerializer(projects, many=True)
+        # course_info = get_object_or_404(CourseRegistration,Q(open_course__course__id = course_id) & Q( student__user__id = self.request.user.id))
+        try:
+            course_info = CourseRegistration.objects.select_related('open_course__semester', 'open_course__course__level', 'open_course__course__department', 'open_course__instructor__user').filter(Q(open_course__course__id = course_id) & Q( student__user__id = self.request.user.id)).latest('id')
+        except CourseRegistration.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+        data = {
+            'course': course_info.open_course.course.course_name,
+            'level': course_info.open_course.course.level.level_name,
+            'department': course_info.open_course.course.department.department_name,
+            'semester': course_info.open_course.semester.semester_name,
+            'year': course_info.open_course.semester.year,
+            'instructor': course_info.open_course.instructor.user.first_name + ' ' + course_info.open_course.instructor.user.last_name,
+            'registration_id': course_info.id,
+        }
+        return Response({'course_info': data, 'projects': projects.data})

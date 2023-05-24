@@ -170,3 +170,28 @@ class ProjectSerializer(serializers.ModelSerializer):
         ret['course'] = self.get_course(instance)
         ret['student'] = self.get_student(instance)
         return ret
+
+class StudentCoursesSerializer(ModelSerializer):
+    course_info = serializers.SerializerMethodField()
+    class Meta:
+        model = CourseRegistration
+        fields = ['course_info']
+    def get_course_info(self, obj):
+        open_course = obj.open_course
+        return {
+            'course_id':open_course.course.id,
+            'course': open_course.course.course_name,
+            'level': open_course.course.level.level_name,
+            'department':open_course.course.department.department_name,
+            'semester':open_course.semester.semester_name,
+            'year':open_course.semester.year,
+            'instructor': open_course.instructor.user.first_name + ' ' + open_course.instructor.user.last_name,
+        }
+class StudentProjectsSerializer(ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ['id', 'name', 'description', 'attachment']
+    
+    name = serializers.CharField(max_length=255, source='project_name')
+    description = serializers.CharField(source='project_description')
+    attachment = serializers.FileField(source='project_file')
