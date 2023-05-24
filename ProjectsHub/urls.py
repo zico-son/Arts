@@ -21,6 +21,7 @@ router.register('instructor-projects',InstructorProjectsViewSet,basename='instru
 # router.register('student-courses', StudentCourseViewSet, basename='student-courses')
 # router.register('student-projects', StudentProjectViewSet, basename='student-projects')
 router.register('student-courses', StudentCoursesViewSet, basename='student-courses')
+router.register('student-post-project', StudentPostProjectViewSet, basename='student-projects')
 urlpatterns = [
     path('', include(router.urls)),
     

@@ -195,3 +195,14 @@ class StudentProjectsSerializer(ModelSerializer):
     name = serializers.CharField(max_length=255, source='project_name')
     description = serializers.CharField(source='project_description')
     attachment = serializers.FileField(source='project_file')
+
+class StudentPostProjectSerializer(ModelSerializer):
+    registration = serializers.CharField(max_length=8)
+    class Meta:
+        model = Project
+        fields = ['id', 'project_name', 'project_description', 'project_file', 'registration']
+    def create(self, validated_data):
+        registration = validated_data.pop('registration')
+        registration = get_object_or_404(CourseRegistration, pk=registration)
+        project = Project.objects.create(**validated_data, registration=registration)
+        return project

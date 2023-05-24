@@ -206,3 +206,10 @@ class StudentCoursesViewSet(ModelViewSet):
             'registration_id': course_info.id,
         }
         return Response({'course_info': data, 'projects': projects.data})
+
+class StudentPostProjectViewSet(ModelViewSet):
+    serializer_class = StudentPostProjectSerializer
+    def get_queryset(self):
+        return Project.objects.none()
+    def get_serializer_context(self):
+        return {'user_id': self.request.user.id}
