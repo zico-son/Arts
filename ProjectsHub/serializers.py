@@ -15,9 +15,9 @@ class InstructorCourseSerializer(ModelSerializer):
         course = obj.course
         return {
             'id' : course.id,
-            'course_name' : course.course_name,
-            'level' : course.level.level_name,
-            'department': course.department.department_name,
+            'name' : course.name,
+            'level' : course.level.name,
+            'department': course.department.name,
         }
 
 
@@ -38,12 +38,12 @@ class JoinCourseSerializer(ModelSerializer):
 class DepartmentSerializer(ModelSerializer):
     class Meta:
         model = Department
-        fields = ['id', 'department_name']
+        fields = ['id', 'name']
 
 class LevelSerializer(ModelSerializer):
     class Meta:
         model = Level
-        fields = ['id', 'level_name']
+        fields = ['id', 'name']
 class StudentSerializer(ModelSerializer):
     user = serializers.SerializerMethodField() 
     class Meta:
@@ -60,17 +60,17 @@ class ViewCourseSerializer(ModelSerializer):
     level = StringRelatedField()
     class Meta:
         model = Course
-        fields = ['id', 'course_name','level', 'department']
+        fields = ['id', 'name','description', 'code','level', 'department']
 
 class CreateCourseSerializer(ModelSerializer):
     class Meta:
         model = Course
-        fields = ['id', 'course_name','level', 'department']
+        fields = ['id', 'name','description', 'code','level', 'department']
 
 class SemesterSerializer(ModelSerializer):
     class Meta:
         model = Semester
-        fields = ['id', 'semester_name', 'year', 'start_date', 'end_date']
+        fields = ['id', 'name', 'year', 'start_date', 'end_date']
 
 
 
@@ -129,10 +129,10 @@ class CourseRegistrationSerializer(ModelSerializer):
         open_course = obj.open_course
         return {
             'id':open_course.id,
-            'course_name': open_course.course.course_name,
-            'level': open_course.course.level.level_name,
-            'department':open_course.course.department.department_name,
-            'semester':open_course.semester.semester_name,
+            'name': open_course.course.name,
+            'level': open_course.course.level.name,
+            'department':open_course.course.department.name,
+            'semester':open_course.semester.name,
             'year':open_course.semester.year,
         }
 
@@ -143,18 +143,16 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = ['id', 'name', 'description', 'attachment', 'course', 'student']
     
-    name = serializers.CharField(max_length=255, source='project_name')
-    description = serializers.CharField(source='project_description')
-    attachment = serializers.FileField(source='project_file')
+    attachment = serializers.FileField(source='file')
 
     def get_course(self, obj):
         registration = obj.registration
         return {
             'id': registration.id,
-            'course_name': registration.open_course.course.course_name,
-            'level': registration.open_course.course.level.level_name,
-            'department': registration.open_course.course.department.department_name,
-            'semester': registration.open_course.semester.semester_name,
+            'name': registration.open_course.course.name,
+            'level': registration.open_course.course.level.name,
+            'department': registration.open_course.course.department.name,
+            'semester': registration.open_course.semester.name,
             'year': registration.open_course.semester.year,
         }
     def get_student(self, obj):
@@ -180,10 +178,10 @@ class StudentCoursesSerializer(ModelSerializer):
         open_course = obj.open_course
         return {
             'course_id':open_course.course.id,
-            'course': open_course.course.course_name,
-            'level': open_course.course.level.level_name,
-            'department':open_course.course.department.department_name,
-            'semester':open_course.semester.semester_name,
+            'course': open_course.course.name,
+            'level': open_course.course.level.name,
+            'department':open_course.course.department.name,
+            'semester':open_course.semester.name,
             'year':open_course.semester.year,
             'instructor': open_course.instructor.user.first_name + ' ' + open_course.instructor.user.last_name,
         }
@@ -192,15 +190,13 @@ class StudentProjectsSerializer(ModelSerializer):
         model = Project
         fields = ['id', 'name', 'description', 'attachment']
     
-    name = serializers.CharField(max_length=255, source='project_name')
-    description = serializers.CharField(source='project_description')
-    attachment = serializers.FileField(source='project_file')
+    attachment = serializers.FileField(source='file')
 
 class StudentPostProjectSerializer(ModelSerializer):
     registration = serializers.CharField(max_length=8)
     class Meta:
         model = Project
-        fields = ['id', 'project_name', 'project_description', 'project_file', 'registration']
+        fields = ['id', 'name', 'description', 'file', 'registration']
     def create(self, validated_data):
         registration = validated_data.pop('registration')
         registration = get_object_or_404(CourseRegistration, pk=registration)

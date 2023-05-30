@@ -15,8 +15,8 @@ from rest_framework.settings import api_settings
 class ProjectViewSet(CustomModelViewSet):
     pagination_class = DefaultPagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ['registration__open_course__semester__semester_name']
-    filterset_fields = [ 'registration__open_course__course__course_name', 'registration__open_course__semester__semester_name', 'registration__open_course__course__level__level_name','registration__open_course__course__department__department_name']
+    search_fields = ['registration__open_course__semester__name']
+    filterset_fields = [ 'registration__open_course__course__name', 'registration__open_course__semester__name', 'registration__open_course__course__level__name','registration__open_course__course__department__name']
     queryset =Project.objects \
         .select_related('registration__student__user') \
         .select_related('registration__open_course__semester') \
@@ -29,8 +29,8 @@ class ProjectViewSet(CustomModelViewSet):
 class StudentProjectViewSet(CustomModelViewSet):
     pagination_class = DefaultPagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ['registration__open_course__semester__semester_name']
-    filterset_fields = [ 'registration__open_course__course__course_name', 'registration__open_course__semester__semester_name', 'registration__open_course__course__level__level_name','registration__open_course__course__department__department_name']
+    search_fields = ['registration__open_course__semester__name']
+    filterset_fields = [ 'registration__open_course__course__name', 'registration__open_course__semester__name', 'registration__open_course__course__level__name','registration__open_course__course__department__name']
     def get_queryset(self):
         user = self.request.user
         student=Student.objects.get(user=user)
@@ -53,21 +53,21 @@ class StudentProjectViewSet(CustomModelViewSet):
 
 class SemesterViewSet(NoDeleteModelViewSet):
     filter_backends = [SearchFilter]
-    search_fields = ['semester_name', 'year']
+    search_fields = ['name', 'year']
     pagination_class = DefaultPagination
     queryset = Semester.objects.all()
     serializer_class = SemesterSerializer
 
 class DepartmentViewSet(NoDeleteModelViewSet):
     filter_backends = [SearchFilter]
-    search_fields = ['department_name']
+    search_fields = ['name']
     pagination_class = DefaultPagination
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
 
 class LevelViewSet(NoDeleteModelViewSet):
     filter_backends = [SearchFilter]
-    search_fields = ['level_name']
+    search_fields = ['name']
     pagination_class = DefaultPagination
     queryset = Level.objects.all()
     serializer_class = LevelSerializer
@@ -84,7 +84,7 @@ class InstructorViewSet(CustomModelViewSet):
             return CreateInstructorSerializer
 class CourseViewSet(NoDeleteModelViewSet):
     filter_backends = [SearchFilter]
-    search_fields = ['course_name', 'level__level_name', 'department__department_name']
+    search_fields = ['name', 'level__name', 'department__name']
     pagination_class = DefaultPagination
     queryset =Course.objects.select_related('level', 'department').all()
     def get_serializer_class(self):
@@ -95,7 +95,7 @@ class CourseViewSet(NoDeleteModelViewSet):
 
 class StudentCourseViewSet(ModelViewSet):
     filter_backends = [SearchFilter]
-    search_fields = ['course_name', 'level__level_name', 'department__department_name']
+    search_fields = ['name', 'level__name', 'department__name']
     pagination_class = DefaultPagination
     
     def get_queryset(self):
@@ -116,7 +116,7 @@ class StudentCourseViewSet(ModelViewSet):
             return CreateCourseSerializer
 class OpenCourseViewSet(ModelViewSet):
     filter_backends = [SearchFilter]
-    search_fields = ['course__course_name', 'semester__semester_name', 'instructor__user__first_name', 'instructor__user__last_name']
+    search_fields = ['course__name', 'semester__name', 'instructor__user__first_name', 'instructor__user__last_name']
     pagination_class = DefaultPagination
     queryset = OpenCourse.objects.select_related('course').select_related('semester').select_related('instructor').select_related('instructor__user').all()
     def get_serializer_class(self):
@@ -155,11 +155,11 @@ class JoinCourseViewSet(ModelViewSet):
         if(CourseRegistration.objects.filter(open_course=open_course,student=student).exists()):
             return Response({"detail": "Student is already registered to this course."},status=status.HTTP_400_BAD_REQUEST)
         registration = CourseRegistration.objects.create(open_course=open_course,student=student)
-        return Response({'student':student_name,'course':open_course.course.course_name})
+        return Response({'student':student_name,'course':open_course.course.name})
 
 class InstructorCourseViewSet(CustomModelViewSet):
     filter_backends = [SearchFilter]
-    search_fields = ['course__course_name']
+    search_fields = ['course__name']
     pagination_class = DefaultPagination
     serializer_class = InstructorCourseSerializer
     def get_queryset(self):
@@ -167,8 +167,8 @@ class InstructorCourseViewSet(CustomModelViewSet):
     
 class InstructorProjectsViewSet(CustomModelViewSet):
     filter_backends =[DjangoFilterBackend,SearchFilter]
-    search_fields = ['registration__open_course__semester__semester_name']
-    filterset_fields = [ 'registration__open_course__course__course_name', 'registration__open_course__semester__semester_name', 'registration__open_course__course__level__level_name','registration__open_course__course__department__department_name']
+    search_fields = ['registration__open_course__semester__name']
+    filterset_fields = [ 'registration__open_course__course__name', 'registration__open_course__semester__name', 'registration__open_course__course__level__name','registration__open_course__course__department__name']
     serializer_class = ProjectSerializer
     def get_queryset(self):
         return Project.objects.filter(registration__open_course__instructor__user=self.request.user) \
@@ -197,10 +197,10 @@ class StudentCoursesViewSet(ModelViewSet):
         except CourseRegistration.DoesNotExist:
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
         data = {
-            'course': course_info.open_course.course.course_name,
-            'level': course_info.open_course.course.level.level_name,
-            'department': course_info.open_course.course.department.department_name,
-            'semester': course_info.open_course.semester.semester_name,
+            'course': course_info.open_course.course.name,
+            'level': course_info.open_course.course.level.name,
+            'department': course_info.open_course.course.department.name,
+            'semester': course_info.open_course.semester.name,
             'year': course_info.open_course.semester.year,
             'instructor': course_info.open_course.instructor.user.first_name + ' ' + course_info.open_course.instructor.user.last_name,
             'registration_id': course_info.id,

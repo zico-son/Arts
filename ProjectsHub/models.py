@@ -5,40 +5,40 @@ import string,random
 
 
 class Level(models.Model):
-    level_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.level_name
+        return self.name
     class Meta:
-        ordering = ['level_name']
+        ordering = ['name']
 
 class Department(models.Model):
-    department_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.department_name
+        return self.name
     class Meta:
-        ordering = ['department_name']
+        ordering = ['name']
 
 class Course(models.Model):
-    course_name = models.CharField(max_length=255)
-    course_code = models.CharField(max_length=255)
-    course_description = models.TextField()
+    name = models.CharField(max_length=255)
+    code = models.CharField(max_length=255)
+    description = models.TextField()
     level = models.ForeignKey(Level, on_delete=models.CASCADE, related_name='level')
     department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='department')
 
     def __str__(self):
-        return self.course_name
+        return self.name
     class Meta:
-        ordering = ['course_name']
+        ordering = ['name']
 
 class Semester(models.Model):
-    semester_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     year = models.IntegerField(validators=[semester_year_validator])
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     def __str__(self):
-        return self.semester_name + ' ' + str(self.year)
+        return self.name + ' ' + str(self.year)
     class Meta:
         ordering = ['-year']
 
@@ -88,13 +88,13 @@ class CourseRegistration(models.Model):
 
 
 class Project(models.Model):
-    project_name = models.CharField(max_length=255)
-    project_description = models.TextField()
-    project_file = models.FileField(upload_to='projects/') # upload files in specific folder based on date
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    file = models.FileField(upload_to='projects/') # upload files in specific folder based on date
     registration = models.ForeignKey(CourseRegistration, on_delete=models.CASCADE, related_name='registration')
     active = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ['project_name']
+        ordering = ['name']
     def __str__(self):
-        return self.project_name
+        return self.name
